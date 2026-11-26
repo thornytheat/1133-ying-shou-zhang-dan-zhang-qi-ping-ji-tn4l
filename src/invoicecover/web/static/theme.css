@@ -1,0 +1,11 @@
+:root {
+    color-scheme: dark;
+    --bg: #141a38; --background: var(--bg);
+    --surface: #202650; --ink: #f3f2ff; --muted: #b0b8e1;
+    --accent: #bab3ff; --border: #4a528d; --wash: #333567;
+    --rail: #111632; --on-rail: #e9e8ff; --on-accent: #15221a;
+    --error: #ffc0b5;
+    --display: "Avenir Next","PingFang SC",sans-serif; --type: "PingFang SC",sans-serif;
+    --radius: 10px; --gutter: 22px; --title: 36px;
+    --base: 14px;
+}
