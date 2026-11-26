@@ -16,8 +16,11 @@ docker compose up --build -d
 - 回款时点 `repayment_clock`
 - 账龄特征 `aging_features`
 - 账期建模 `term_scorecard`
+- 校准回放 `channel_calibration`
 - 账期裁定 `credit_terms`
 - 回款复盘 `collection_vintage`
+
+重算账期时先在「账期建模」环节查看「校准回放」：只有同一批留出户月上渠道校准的概率平方误差严格更小、且高风险线下漏判逾期户月不增加时才采用渠道校准，否则沿用全体校准；超出训练范围的户不补估概率，保留原处置。
 
 ## 查看运行结果
 

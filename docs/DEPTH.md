@@ -10,6 +10,7 @@ AI/ML / 传统ML
 | M2 回款时点 | 回款时点 | 按实际到账次序逐分抵扣溢缴暂挂 | `src/invoicecover/repayment_clock/contracts.py` `src/invoicecover/repayment_clock/engine.py` `src/invoicecover/repayment_clock/service.py` | `tests/test_repayment_clock.py` |
 | M3 账龄特征 | 账龄特征 | 账龄分桶与折内中心化 | `src/invoicecover/aging_features/contracts.py` `src/invoicecover/aging_features/engine.py` `src/invoicecover/aging_features/service.py` | `tests/test_aging_features.py` |
 | M4 账期建模 | 账期建模 | 时序逻辑回归、保序校准和分布外拦截 | `src/invoicecover/term_scorecard/contracts.py` `src/invoicecover/term_scorecard/engine.py` `src/invoicecover/term_scorecard/service.py` | `tests/test_term_scorecard.py` |
+| M4b 校准回放 | 重算账期校准方式选择 | 留出期分渠道保序、同批 Brier 与高风险线漏判双门槛 | `src/invoicecover/channel_calibration/contracts.py` `src/invoicecover/channel_calibration/engine.py` `src/invoicecover/channel_calibration/service.py` | `tests/test_channel_calibration.py` |
 | M5 账期裁定 | 账期裁定 | 按复核优先级排序，逐席守恒 | `src/invoicecover/credit_terms/contracts.py` `src/invoicecover/credit_terms/engine.py` `src/invoicecover/credit_terms/service.py` | `tests/test_credit_terms.py` |
 | M6 回款复盘 | 回款复盘 | 校准分布 PSI 与逐账单金额复核 | `src/invoicecover/collection_vintage/contracts.py` `src/invoicecover/collection_vintage/engine.py` `src/invoicecover/collection_vintage/service.py` | `tests/test_collection_vintage.py` |
 
@@ -26,4 +27,8 @@ AI/ML / 传统ML
 | TRAP-43 | 留出集无正类 | 产生错误的业务记录或评分 | 报告 AP 未定义和 ECE | `src/invoicecover/term_scorecard/engine.py` | `tests/test_term_scorecard.py::test_degenerate_holdout_reports_undefined_average_precision` |
 | TRAP-44 | 相邻校准组违序 | 产生错误的业务记录或评分 | PAV 合并并计算 ECE | `src/invoicecover/term_scorecard/engine.py` | `tests/test_term_scorecard.py::test_isotonic_repairs_reversed_probability_order` |
 | TRAP-42 | 追加未来观测 | 产生错误的业务记录或评分 | 历史模型权重不变 | `src/invoicecover/term_scorecard/engine.py` | `tests/test_term_scorecard.py::test_calibration_data_never_changes_training_weights` |
+| TRAP-61 | 回放混入留出期后才成熟的结论 | 未来信息泄漏，校准偏乐观 | 回放拟合只用留出期开始前已成熟户月 | `src/invoicecover/channel_calibration/engine.py` | `tests/test_channel_calibration.py::test_replay_only_uses_matured_outcomes_before_holdout_start` |
+| TRAP-62 | 渠道留出户月只有单一标签 | 分渠道保序退化、概率失真 | 该渠道判为不合格并排除出同批比较 | `src/invoicecover/channel_calibration/engine.py` | `tests/test_channel_calibration.py::test_channel_requires_both_classes_in_holdout` |
+| TRAP-63 | 分布偏移下渠道校准漏掉高风险户 | 该复核的户被放过 | 同批 Brier 严格更小且高风险线下漏判不增加才采用，否则全体校准 | `src/invoicecover/channel_calibration/engine.py` | `tests/test_channel_calibration.py::test_pooled_fallback_when_missed_events_increase` |
+| TRAP-64 | 当期户超出训练包络 | 外推概率不可信 | 不补估概率，保留原处置并标注来源 | `src/invoicecover/channel_calibration/service.py` | `tests/test_channel_calibration.py::test_apply_replay_remaps_supported_and_keeps_out_of_support` |
 | TRAP-19 | 超期及高分同时触发 | 产生错误的业务记录或评分 | 先敞口再高分，次序确定 | `src/invoicecover/credit_terms/engine.py` | `tests/test_credit_terms.py::test_competing_rules_keep_conservative_priority_independent_of_input_order` |
